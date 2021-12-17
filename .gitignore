@@ -3,3 +3,7 @@
 ################################################################################
 
 /.vs
+/Winui3POC/TestApp01/bin/x86/Debug/net6.0-windows10.0.19041.0/win10-x86
+/Winui3POC/TestApp01/obj
+/Winui3POC/TestApp01/Assets
+/Winui3POC/.vs/Winui3POC/v17
