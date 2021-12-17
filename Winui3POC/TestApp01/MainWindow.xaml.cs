@@ -26,11 +26,22 @@ namespace TestApp01
         public MainWindow()
         {
             this.InitializeComponent();
+
+            Title = "TestApp01";
+            mainWindow.IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed;
+            mainWindow.IsSettingsVisible = false;
+            mainWindow.SelectionChanged += MainWindow_SelectionChanged;
         }
 
-        private void myButton_Click(object sender, RoutedEventArgs e)
+        private void MainWindow_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            myButton.Content = "Clicked";
+            var item = args.SelectedItemContainer as NavigationViewItem;
+
+            if (item == null || item.Tag == null)
+                return;
+
+            contentFrame.Navigate(Type.GetType(item.Tag.ToString()), item.Content);
+            mainWindow.SelectedItem = item;
         }
     }
 }
