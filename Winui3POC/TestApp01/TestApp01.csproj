@@ -40,6 +40,8 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Enums\" />
+    <Folder Include="Model\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
