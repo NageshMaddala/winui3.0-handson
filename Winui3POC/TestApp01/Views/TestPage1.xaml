@@ -22,10 +22,12 @@
             <TextBlock Text="Media Collection" Margin="4" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                 <TextBlock Text="Media Type:" Margin="4" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
-                <ComboBox x:Name="ItemFilter" MinWidth="120" Margin="0,2,6,4"></ComboBox>
+                <ComboBox x:Name="ItemFilter" MinWidth="120" Margin="0,2,6,4" ItemsSource="{x:Bind ViewModel.Mediums}"
+                          SelectedItem="{x:Bind ViewModel.SelectedMedium, Mode=TwoWay}"></ComboBox>
             </StackPanel>
         </Grid>
-        <ListView Grid.Row="1" x:Name="ItemList" Background="Aqua">
+        <ListView Grid.Row="1" x:Name="ItemList" Background="Aqua"
+                  ItemsSource="{x:Bind ViewModel.Items}" SelectedItem="{x:Bind ViewModel.SelectedMediaItem, Mode=TwoWay}">
             <ListView.HeaderTemplate>
                 <DataTemplate>
                     <Grid>
@@ -57,6 +59,15 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Button Content="Add Item" HorizontalAlignment="Right" Grid.Row="2" Margin="8" Click="AddButton_Click"></Button>
+        <StackPanel Grid.Row="2"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+            <Button Command="{x:Bind ViewModel.AddEditCommand}"
+                    Content="Add Item"
+                    Margin="8,8,0,8"/>
+            <Button Command="{x:Bind ViewModel.DeleteCommand}"
+                    Content="Delete Item"
+                    Margin="8"/>
+        </StackPanel>
     </Grid>
 </Page>
