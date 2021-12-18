@@ -9,6 +9,7 @@ public class BindableBase : INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
     protected INavigationService _navigationService;
     protected IDataService _dataService;
+    protected ISqliteDataService _sqliteDataService;
 
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {

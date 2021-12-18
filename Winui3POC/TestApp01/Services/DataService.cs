@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TestApp01.Enums;
 using TestApp01.Interfaces;
 using TestApp01.Model;
@@ -136,6 +137,11 @@ public class DataService : IDataService
     public IList<LocationType> GetLocationTypes()
     {
         return _locationTypes;
+    }
+
+    public Task InitializeDataAsync()
+    {
+        return null;
     }
 
     public void UpdateItem(MediaItem item)

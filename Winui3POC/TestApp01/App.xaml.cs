@@ -38,13 +38,35 @@ namespace TestApp01
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+        protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             // bootstrap the whole setup here
             Container = RegisterServices();
+
+            var dataService = Container.GetService<ISqliteDataService>();
+            await dataService.InitializeDataAsync();
             
+            // Todo: Find the frame which on main window
+            // it would help us navigate accross pages
+            //Frame rootFrame = Window.Current.Content as Frame;
+
+            //if (rootFrame == null)
+            //{
+            //    rootFrame = new Frame();
+
+            //    rootFrame.NavigationFailed += RootFrame_NavigationFailed;
+
+            //    Window.Current.Content = rootFrame;
+            //}
+
+
             m_window = new MainWindow();
             m_window.Activate();
+        }
+
+        private void RootFrame_NavigationFailed(object sender, Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs e)
+        {
+
         }
 
         public static Window m_window;
@@ -62,7 +84,8 @@ namespace TestApp01
             navigationService.Configure(nameof(ItemDetailsPage), typeof(ItemDetailsPage));
 
             services.AddSingleton<INavigationService>(navigationService);
-            services.AddSingleton<IDataService, DataService>();
+            //services.AddSingleton<IDataService, DataService>();
+            services.AddSingleton<ISqliteDataService, SqliteDataService>();
 
             // transient means per instance (new object will be returned everytime when asked)
             services.AddTransient<MainViewModel>();

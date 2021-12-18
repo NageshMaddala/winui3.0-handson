@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.UI.Xaml.Input;
 using TestApp01.Enums;
@@ -18,19 +19,46 @@ public class MainViewModel : BindableBase
     private int additionalItemCount = 1;
     private const string AllMediums = "All";
 
-    public MainViewModel(INavigationService navigationService, IDataService dataService)
+    public MainViewModel(INavigationService navigationService, ISqliteDataService dataService)
     {
         _navigationService = navigationService;
-        _dataService = dataService;
+        _sqliteDataService = dataService;
 
-        PopulateData();
+        //PopulateData();
 
-        DeleteCommand = new RelayCommand(DeleteItem, CanDeleteItem);
-
+        //DeleteCommand = new RelayCommand(DeleteItem, CanDeleteItem);
+        DeleteCommand = new RelayCommand(async () => await DeleteItemAsync(), CanDeleteItem);
+        
         // No CanExecute param is needed for this command
         // because you can always add or edit items.
         AddEditCommand = new RelayCommand(AddOrEditItem);
+        PopulateDataAsync();
     }
+
+    public async Task PopulateDataAsync()
+    {
+        items.Clear();
+
+        foreach (var item in await _sqliteDataService.GetItemsAsync())
+        {
+            items.Add(item);
+        }
+
+        allItems = new ObservableCollection<MediaItem>(Items);
+
+        mediums = new ObservableCollection<string>
+        {
+            AllMediums
+        };
+
+        foreach (var itemType in _sqliteDataService.GetItemTypes())
+        {
+            mediums.Add(itemType.ToString());
+        }
+
+        selectedMedium = Mediums[0];
+    }
+
 
     public void PopulateData()
     {
@@ -192,6 +220,12 @@ public class MainViewModel : BindableBase
     public void DeleteItem()
     {
         allItems.Remove(SelectedMediaItem);
+        Items.Remove(SelectedMediaItem);
+    }
+
+    private async Task DeleteItemAsync()
+    {
+        await _sqliteDataService.DeleteItemAsync(SelectedMediaItem);
         Items.Remove(SelectedMediaItem);
     }
 
