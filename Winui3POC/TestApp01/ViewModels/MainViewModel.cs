@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Microsoft.UI.Xaml.Input;
 using TestApp01.Enums;
+using TestApp01.Interfaces;
 using TestApp01.Model;
 
 namespace TestApp01.ViewModels;
@@ -9,14 +11,18 @@ namespace TestApp01.ViewModels;
 public class MainViewModel : BindableBase
 {
     private string selectedMedium;
-    private ObservableCollection<MediaItem> items;
+    private ObservableCollection<MediaItem> items = new ObservableCollection<MediaItem>();
     private ObservableCollection<MediaItem> allItems;
     private IList<string> mediums;
     private MediaItem selectedMediaItem;
     private int additionalItemCount = 1;
+    private const string AllMediums = "All";
 
-    public MainViewModel()
+    public MainViewModel(INavigationService navigationService, IDataService dataService)
     {
+        _navigationService = navigationService;
+        _dataService = dataService;
+
         PopulateData();
 
         DeleteCommand = new RelayCommand(DeleteItem, CanDeleteItem);
@@ -28,46 +34,67 @@ public class MainViewModel : BindableBase
 
     public void PopulateData()
     {
-        var cd = new MediaItem
-        {
-            Id = 1,
-            Name = "Classical Favorites",
-            MediaType = ItemType.Music,
-            MediumInfo = new Medium { Id = 1, MediaType = ItemType.Music, Name = "CD" }
-        };
+        //var cd = new MediaItem
+        //{
+        //    Id = 1,
+        //    Name = "Classical Favorites",
+        //    MediaType = ItemType.Music,
+        //    MediumInfo = new Medium { Id = 1, MediaType = ItemType.Music, Name = "CD" }
+        //};
 
-        var book = new MediaItem
-        {
-            Id = 2,
-            Name = "Classic Fairy Tales",
-            MediaType = ItemType.Book,
-            MediumInfo = new Medium { Id = 2, MediaType = ItemType.Book, Name = "Book" }
-        };
+        //var book = new MediaItem
+        //{
+        //    Id = 2,
+        //    Name = "Classic Fairy Tales",
+        //    MediaType = ItemType.Book,
+        //    MediumInfo = new Medium { Id = 2, MediaType = ItemType.Book, Name = "Book" }
+        //};
 
-        var bluRay = new MediaItem
-        {
-            Id = 3,
-            Name = "The Mummy",
-            MediaType = ItemType.Video,
-            MediumInfo = new Medium { Id = 3, MediaType = ItemType.Video, Name = "Blu Ray" }
-        };
+        //var bluRay = new MediaItem
+        //{
+        //    Id = 3,
+        //    Name = "The Mummy",
+        //    MediaType = ItemType.Video,
+        //    MediumInfo = new Medium { Id = 3, MediaType = ItemType.Video, Name = "Blu Ray" }
+        //};
 
-        items = new ObservableCollection<MediaItem>
-            {
-                cd,
-                book,
-                bluRay
-            };
+        //items = new ObservableCollection<MediaItem>
+        //    {
+        //        cd,
+        //        book,
+        //        bluRay
+        //    };
+
+        //allItems = new ObservableCollection<MediaItem>(Items);
+
+        //mediums = new List<string>
+        //    {
+        //        "All",
+        //        nameof(ItemType.Book),
+        //        nameof(ItemType.Music),
+        //        nameof(ItemType.Video)
+        //    };
+
+        //selectedMedium = Mediums[0];
+
+        items.Clear();
+
+        foreach (var item in _dataService.GetItems())
+        {
+            items.Add(item);
+        }
 
         allItems = new ObservableCollection<MediaItem>(Items);
 
-        mediums = new List<string>
-            {
-                "All",
-                nameof(ItemType.Book),
-                nameof(ItemType.Music),
-                nameof(ItemType.Video)
-            };
+        mediums = new ObservableCollection<string>
+        {
+            AllMediums
+        };
+
+        foreach (var itemType in _dataService.GetItemTypes())
+        {
+            mediums.Add(itemType.ToString());
+        }
 
         selectedMedium = Mediums[0];
     }
@@ -136,20 +163,28 @@ public class MainViewModel : BindableBase
     {
         // Note this is temporary until
         // we use a real data source for items.
-        const int startingItemCount = 3;
+        //const int startingItemCount = 3;
 
-        var newItem = new MediaItem
+        //var newItem = new MediaItem
+        //{
+        //    Id = startingItemCount + additionalItemCount,
+        //    Location = LocationType.InCollection,
+        //    MediaType = ItemType.Music,
+        //    MediumInfo = new Medium { Id = 1, MediaType = ItemType.Music, Name = "CD" },
+        //    Name = $"CD {additionalItemCount}"
+        //};
+
+        //allItems.Add(newItem);
+        //Items.Add(newItem);
+        //additionalItemCount++;
+        var selectedItemId = -1;
+
+        if (SelectedMediaItem != null)
         {
-            Id = startingItemCount + additionalItemCount,
-            Location = LocationType.InCollection,
-            MediaType = ItemType.Music,
-            MediumInfo = new Medium { Id = 1, MediaType = ItemType.Music, Name = "CD" },
-            Name = $"CD {additionalItemCount}"
-        };
+            selectedItemId = SelectedMediaItem.Id;
+        }
 
-        allItems.Add(newItem);
-        Items.Add(newItem);
-        additionalItemCount++;
+        _navigationService.NavigateTo("ItemDetailsPage", selectedItemId);
     }
 
     public ICommand DeleteCommand { get; set; }
@@ -161,4 +196,9 @@ public class MainViewModel : BindableBase
     }
 
     private bool CanDeleteItem() => selectedMediaItem != null;
+
+    public void ListViewDoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+    {
+        AddOrEditItem();
+    }
 }

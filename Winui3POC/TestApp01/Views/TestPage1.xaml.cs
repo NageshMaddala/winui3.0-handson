@@ -1,20 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Popups;
 using TestApp01.Model;
-using TestApp01.Enums;
 using TestApp01.ViewModels;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -37,6 +24,8 @@ namespace TestApp01.Views
             InitializeComponent();
         }
 
-        public MainViewModel ViewModel => new MainViewModel();
+        // use DI here to resolve now
+        //public MainViewModel ViewModel => new MainViewModel();
+        public MainViewModel ViewModel { get; } = (MainViewModel)(Application.Current as App).Container.GetService(typeof(MainViewModel));
     }
 }

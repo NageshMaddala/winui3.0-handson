@@ -1,11 +1,14 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using TestApp01.Interfaces;
 
 namespace TestApp01.ViewModels;
 
 public class BindableBase : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged;
+    protected INavigationService _navigationService;
+    protected IDataService _dataService;
 
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
