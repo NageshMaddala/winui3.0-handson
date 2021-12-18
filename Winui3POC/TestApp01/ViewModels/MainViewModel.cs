@@ -19,12 +19,12 @@ public class MainViewModel : BindableBase
     private int additionalItemCount = 1;
     private const string AllMediums = "All";
 
-    public MainViewModel(INavigationService navigationService, ISqliteDataService dataService)
+    public MainViewModel(INavigationService navigationService, IDataService dataService)
     {
         _navigationService = navigationService;
-        _sqliteDataService = dataService;
+        _dataService = dataService;
 
-        //PopulateData();
+        PopulateData();
 
         //DeleteCommand = new RelayCommand(DeleteItem, CanDeleteItem);
         DeleteCommand = new RelayCommand(async () => await DeleteItemAsync(), CanDeleteItem);
@@ -32,32 +32,32 @@ public class MainViewModel : BindableBase
         // No CanExecute param is needed for this command
         // because you can always add or edit items.
         AddEditCommand = new RelayCommand(AddOrEditItem);
-        PopulateDataAsync();
+        //PopulateDataAsync();
     }
 
-    public async Task PopulateDataAsync()
-    {
-        items.Clear();
+    //public async Task PopulateDataAsync()
+    //{
+    //    items.Clear();
 
-        foreach (var item in await _sqliteDataService.GetItemsAsync())
-        {
-            items.Add(item);
-        }
+    //    foreach (var item in await _sqliteDataService.GetItemsAsync())
+    //    {
+    //        items.Add(item);
+    //    }
 
-        allItems = new ObservableCollection<MediaItem>(Items);
+    //    allItems = new ObservableCollection<MediaItem>(Items);
 
-        mediums = new ObservableCollection<string>
-        {
-            AllMediums
-        };
+    //    mediums = new ObservableCollection<string>
+    //    {
+    //        AllMediums
+    //    };
 
-        foreach (var itemType in _sqliteDataService.GetItemTypes())
-        {
-            mediums.Add(itemType.ToString());
-        }
+    //    foreach (var itemType in _sqliteDataService.GetItemTypes())
+    //    {
+    //        mediums.Add(itemType.ToString());
+    //    }
 
-        selectedMedium = Mediums[0];
-    }
+    //    selectedMedium = Mediums[0];
+    //}
 
 
     public void PopulateData()
@@ -225,7 +225,7 @@ public class MainViewModel : BindableBase
 
     private async Task DeleteItemAsync()
     {
-        await _sqliteDataService.DeleteItemAsync(SelectedMediaItem);
+        //await _sqliteDataService.DeleteItemAsync(SelectedMediaItem);
         Items.Remove(SelectedMediaItem);
     }
 

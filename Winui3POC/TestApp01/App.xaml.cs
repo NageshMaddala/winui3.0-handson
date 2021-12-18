@@ -84,7 +84,7 @@ namespace TestApp01
             navigationService.Configure(nameof(ItemDetailsPage), typeof(ItemDetailsPage));
 
             services.AddSingleton<INavigationService>(navigationService);
-            //services.AddSingleton<IDataService, DataService>();
+            services.AddSingleton<IDataService, DataService>();
             services.AddSingleton<ISqliteDataService, SqliteDataService>();
 
             // transient means per instance (new object will be returned everytime when asked)
